@@ -22,35 +22,35 @@ UPhysInstancedStaticMeshComponent::UPhysInstancedStaticMeshComponent(const FObje
 // of this one
 void UPhysInstancedStaticMeshComponent::CreatePhysicsState()
 {
-    check(InstanceBodies.Num() == 0);
-
-    FPhysScene* PhysScene = GetWorld()->GetPhysicsScene();
-
-    if (!PhysScene) { return; }
-
-#if WITH_PHYSX
-    //check(Aggregates.Num() == 0);
-
-    const int32 NumBodies = PerInstanceSMData.Num();
-
-    // Aggregates aren't used for static objects
-    const int32 NumAggregates = (Mobility == EComponentMobility::Movable) ? FMath::DivideAndRoundUp<int32>(NumBodies, AggregateMaxSize) : 0;
-
-    // Get the scene type from the main BodyInstance
-    //const uint32 SceneType = BodyInstance.UseAsyncScene() ? PST_Async : PST_Sync;
-
-    for (int32 i = 0; i < NumAggregates; i++)
-    {
-        auto* Aggregate = GPhysXSDK->createAggregate(AggregateMaxSize, false);
-        //Aggregates.Add(Aggregate);
-        //PhysScene->GetPhysXScene(SceneType)->addAggregate(*Aggregate);
-    }
-#endif
-
-    // Create all the bodies.
-    CreateAllInstanceBodies();
-
-    USceneComponent::CreatePhysicsState();
+//     check(InstanceBodies.Num() == 0);
+//
+//     FPhysScene* PhysScene = GetWorld()->GetPhysicsScene();
+//
+//     if (!PhysScene) { return; }
+//
+// #if WITH_PHYSX
+//     //check(Aggregates.Num() == 0);
+//
+//     const int32 NumBodies = PerInstanceSMData.Num();
+//
+//     // Aggregates aren't used for static objects
+//     const int32 NumAggregates = (Mobility == EComponentMobility::Movable) ? FMath::DivideAndRoundUp<int32>(NumBodies, AggregateMaxSize) : 0;
+//
+//     // Get the scene type from the main BodyInstance
+//     //const uint32 SceneType = BodyInstance.UseAsyncScene() ? PST_Async : PST_Sync;
+//
+//     for (int32 i = 0; i < NumAggregates; i++)
+//     {
+//         auto* Aggregate = GPhysXSDK->createAggregate(AggregateMaxSize, false);
+//         //Aggregates.Add(Aggregate);
+//         //PhysScene->GetPhysXScene(SceneType)->addAggregate(*Aggregate);
+//     }
+// #endif
+//
+//     // Create all the bodies.
+//     CreateAllInstanceBodies();
+//
+//     USceneComponent::CreatePhysicsState();
 }
 
 void UPhysInstancedStaticMeshComponent::CreateAllInstanceBodies()
