@@ -49,6 +49,6 @@ AStaticMeshesSpawner* AInstancedStaticMeshesHolder::findStaticMeshesSpawnerByObj
     {
         return _instancedStaticMeshesInfo.FindRef(objectType);
     }
-
+    
     return nullptr;
 }

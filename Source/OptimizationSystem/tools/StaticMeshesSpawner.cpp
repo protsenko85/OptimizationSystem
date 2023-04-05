@@ -25,27 +25,24 @@ void AStaticMeshesSpawner::createMeshInstanceFromObject(AActor* copiedObject)
     const FTransform& objectTransform = copiedObject->GetActorTransform();
     const int32 spawnedInstanceIndex = InstancedStaticMeshComponent->AddInstanceWorldSpace(objectTransform);
 
-    if (InstancedStaticMeshComponent->IsSimulatingPhysics())
-    {
-        UE_LOG(LogTemp, Log, TEXT("Simulating!"));
-    }
+    Cast<AGameObject>(copiedObject)->setInstanceIndex(spawnedInstanceIndex);
 
-    // TPair<AActor*, FBodyInstance*>* foundData =
-    //     _instancedStaticMeshesActors->FindByPredicate([copiedObject](TPair<AActor*, FBodyInstance*> data)
-    // {
-    //     return copiedObject == data.Key;
-    // });
-    //
-    // if (foundData != nullptr)
-    // {
-    //     foundData->Value = InstancedStaticMeshComponent->InstanceBodies[spawnedInstanceIndex];
-    // }
-    // else
-    // {
-    //     const TPair<AActor*, FBodyInstance*> newPair(copiedObject,
-    //         InstancedStaticMeshComponent->InstanceBodies[spawnedInstanceIndex]);
-    //     _instancedStaticMeshesActors->Add(newPair);
-    // }
+    TPair<AActor*, FBodyInstance*>* foundData =
+        _instancedStaticMeshesActors->FindByPredicate([copiedObject](TPair<AActor*, FBodyInstance*> data)
+    {
+        return copiedObject == data.Key;
+    });
+    
+    if (foundData != nullptr)
+    {
+        foundData->Value = InstancedStaticMeshComponent->InstanceBodies[spawnedInstanceIndex];
+    }
+    else
+    {
+        const TPair<AActor*, FBodyInstance*> newPair(copiedObject,
+            InstancedStaticMeshComponent->InstanceBodies[spawnedInstanceIndex]);
+        _instancedStaticMeshesActors->Add(newPair);
+    }
 
     copiedObject->OnDestroyed.AddUniqueDynamic(this, &AStaticMeshesSpawner::OnHeldObjectDestroyed);
 }
@@ -78,13 +75,13 @@ void AStaticMeshesSpawner::init(UStaticMesh* exampleMesh)
 
 void AStaticMeshesSpawner::addConvertableObject(AGameObject* addedObject)
 {
-    // const TPair<AActor*, FBodyInstance*>* heldObjectInfo = getHeldMeshDataByObject(addedObject);
-    //
-    // if (heldObjectInfo == nullptr)
-    // {
-    //     const TPair<AActor*, FBodyInstance*> newPair(addedObject, nullptr);
-    //     _instancedStaticMeshesActors->Add(newPair);
-    // }
+    const TPair<AActor*, FBodyInstance*>* heldObjectInfo = getHeldMeshDataByObject(addedObject);
+    
+    if (heldObjectInfo == nullptr)
+    {
+        const TPair<AActor*, FBodyInstance*> newPair(addedObject, nullptr);
+        _instancedStaticMeshesActors->Add(newPair);
+    }
 
     //changeAllActorsToMeshes();
     
@@ -106,6 +103,7 @@ void AStaticMeshesSpawner::removeInstanceMeshInfoByIndex(int meshInstanceIndex) 
     if (meshInstanceIndex != INDEX_NONE)
     {
         _instancedStaticMeshesActors->RemoveAt(meshInstanceIndex);
+        InstancedStaticMeshComponent->RemoveInstance(meshInstanceIndex);
     }
 }
 

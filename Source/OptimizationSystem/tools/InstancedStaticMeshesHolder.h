@@ -16,7 +16,6 @@ public:
 	void addNewMeshToInstancedStaticMesh(AGameObject* addedObject, int optimizingIndex);
 	void removeObjectFromInstancedStaticMeshes(AGameObject* removedObject, int optimizingIndex) const;
 
-protected:
 	virtual void BeginDestroy() override;
 	AStaticMeshesSpawner* findStaticMeshesSpawnerByObjectType(int objectType) const;
 	
